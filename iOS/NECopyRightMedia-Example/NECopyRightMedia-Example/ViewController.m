@@ -7,13 +7,15 @@
 #import <NECopyrightedMedia/NECopyrightedMediaPublic.h>
 #import "RTCManager.h"
 
-static NSString *RTCAppKey = <#请输入字符串#>;
-static NSString *RTCToken = <#请输入字符串#>;
-static long RTCUid = <#请输入数值#> ;
-static NSString *copyrightedAppKey = <#请输入字符串#>;
-static NSString *dynamicToken = <#请输入字符串#>;
-static NSString *channelName = <#请输入字符串#>;
-static NSString *account = <#请输入字符串#>;
+static NSString *RTCAppKey = <#请输入字符串 #>;
+static NSString *RTCToken = <#请输入字符串 #>;
+static long RTCUid = <#请输入数值 #>;
+static NSString *copyrightedAppKey = <#请输入字符串 #>;
+static NSString *dynamicToken = <#请输入字符串 #>;
+static NSString *channelName = <#请输入字符串 #>;
+static NSString *account = <#请输入字符串 #>;
+
+static int NEPageSize = 20;
 
 typedef void (^SongListBlock)(NSError *_Nullable error);
 
@@ -48,13 +50,13 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
   //初始化RTC
   [[RTCManager getInstance] initRTC:RTCAppKey];
   //加入房间
-  [[RTCManager getInstance] enterRTCRoomWithToken:NULL channelName:@"12" myUid:10086];
+  [[RTCManager getInstance] enterRTCRoomWithToken:RTCToken channelName:channelName myUid:RTCUid];
   //设置RTC监听
   [[RTCManager getInstance] addRTCManagerObserve:self];
 
   //初始化版权SDK
   [[NECopyrightedMedia getInstance] initialize:copyrightedAppKey
-                                         token:dynamicToken
+                                         token:realTimeToken
                                       userUuid:account
                                         extras:nil];
   //清理缓存
