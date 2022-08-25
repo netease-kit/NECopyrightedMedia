@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
   private void downloadSong(String user, String token, String songId) {
     NECopyrightedMedia copyrightedMedia = NECopyrightedMedia.getInstance();
     HashMap<String, Object> extras = new HashMap<>();
-    copyrightedMedia.initialize(this, AppConfig.getAppKey(), token, user, null);
+    copyrightedMedia.initialize(this, AppConfig.getAppKey(), token, user, extras);
     copyrightedMedia.preloadSong(
         songId,
         new NESongPreloadCallback() {
