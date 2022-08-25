@@ -7,14 +7,13 @@
 #import <NECopyrightedMedia/NECopyrightedMediaPublic.h>
 #import "RTCManager.h"
 
-static NSString *RTCAppKey = @"";
-static NSString *RTCToken = @"";
-static long *RTCUid = @"";
-static NSString *copyrightedAppKey = @"";
-static NSString *realTimeToken = @"";
-static NSString *channelName = @"";
-static NSString *account = @"";
-static int NEPageSize = 20;
+static NSString *RTCAppKey = <#请输入字符串#>;
+static NSString *RTCToken = <#请输入字符串#>;
+static long RTCUid = <#请输入数值#> ;
+static NSString *copyrightedAppKey = <#请输入字符串#>;
+static NSString *dynamicToken = <#请输入字符串#>;
+static NSString *channelName = <#请输入字符串#>;
+static NSString *account = <#请输入字符串#>;
 
 typedef void (^SongListBlock)(NSError *_Nullable error);
 
@@ -39,6 +38,7 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
 @property(nonatomic, strong) NSString *currentSongId;
 @end
 
+
 @implementation ViewController
 
 - (void)viewDidLoad {
@@ -48,16 +48,13 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
   //初始化RTC
   [[RTCManager getInstance] initRTC:RTCAppKey];
   //加入房间
-  [[RTCManager getInstance]
-      enterRTCRoomWithToken:RTCToken
-                channelName:channelName
-                      myUid:RTCUid];
+  [[RTCManager getInstance] enterRTCRoomWithToken:NULL channelName:@"12" myUid:10086];
   //设置RTC监听
   [[RTCManager getInstance] addRTCManagerObserve:self];
 
   //初始化版权SDK
   [[NECopyrightedMedia getInstance] initialize:copyrightedAppKey
-                                         token:realTimeToken
+                                         token:dynamicToken
                                       userUuid:account
                                         extras:nil];
   //清理缓存
@@ -76,6 +73,7 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
   self.songIdLabel = [[UILabel alloc] init];
   self.songIdLabel.text = @"songId:";
   self.songIdLabel.textColor = [UIColor whiteColor];
+  self.songIdLabel.backgroundColor = [UIColor blackColor];
   [self.view addSubview:self.songIdLabel];
   [self.songIdLabel mas_makeConstraints:^(MASConstraintMaker *make) {
     make.left.mas_equalTo(self.view).offset(20);
@@ -225,7 +223,7 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
   }
 }
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [self.view endEditing:YES];
+  [self.view endEditing:YES];
 }
 - (void)onTokenExpired {
   // Token过期
