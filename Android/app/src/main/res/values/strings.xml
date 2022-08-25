@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2022 NetEase, Inc. All rights reserved. -->
+<!-- Use of this source code is governed by a MIT license that can be -->
+<!-- found in the LICENSE file. -->
+
+<resources>
+    <string name="app_name">copyrightedmediademo</string>
+    <string name="please_input_user_id">Please input user id</string>
+    <string name="please_input_rtc_token">Please input rtc token</string>
+    <string name="invalid_user_id">invalid user id</string>
+    <string name="please_input_room_id">Please input room id</string>
+    <string name="join_room">Join Room</string>
+    <string name="leave_room">Leave Room</string>
+    <string name="anchor">Anchor</string>
+    <string name="start_movie">Start Movie</string>
+    <string name="start_play">Start Play</string>
+    <string name="please_input_music_user_id">Please input music user id</string>
+    <string name="please_input_music_token">Please input music token</string>
+    <string name="please_input_song_id">Please input song id</string>
+    <string name="song_load_success">歌曲加载成功, songId: %s</string>
+    <string name="song_load_failed">歌曲加载失败 %d %s</string>
+    <string name="start_load">歌曲开始加载, songId: %s</string>
+
+</resources>
