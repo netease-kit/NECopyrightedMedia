@@ -20,7 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addRTCManagerObserve:(id<RTCManagerProtocol>)obj;
 - (void)enterRTCRoomWithToken:(NSString *)token
                   channelName:(NSString *)channelName
-                        myUid:(uint64_t)myUid;
+                        myUid:(uint64_t)myUid
+                        error:(void(^)(NSError * _Nullable))callback;
+
 //使用mix播放 只能同时播放一个音频
 - (void)playAudioWithPath:(NSString *)path;
 //使用effect播放，同时播放多个

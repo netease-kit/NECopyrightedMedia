@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		319AA4D1626F0DA093222141 /* Pods_NECopyRightMedia_ExampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4928806E2F0CED3390020A02 /* Pods_NECopyRightMedia_ExampleTests.framework */; };
 		65C5DCB3B913AAC589EFC57C /* Pods_NECopyRightMedia_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04D36D0B49773E5FCA82E83A /* Pods_NECopyRightMedia_Example.framework */; };
+		ED8CF06F28B8A3D400DC61A1 /* GenerateTestUserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = ED8CF06E28B8A3D400DC61A1 /* GenerateTestUserToken.m */; };
+		ED8CF07328B8C74700DC61A1 /* DynamicTokenHandleEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = ED8CF07228B8C74700DC61A1 /* DynamicTokenHandleEngine.m */; };
 		EDB434E62886A52C003A23F7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDB434E52886A52C003A23F7 /* AppDelegate.m */; };
 		EDB434E92886A52C003A23F7 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDB434E82886A52C003A23F7 /* SceneDelegate.m */; };
 		EDB434EC2886A52C003A23F7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDB434EB2886A52C003A23F7 /* ViewController.m */; };
@@ -63,6 +65,11 @@
 		5F87D786CF76C7332EFE4E00 /* Pods-NECopyRightMedia-ExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NECopyRightMedia-ExampleTests.release.xcconfig"; path = "Target Support Files/Pods-NECopyRightMedia-ExampleTests/Pods-NECopyRightMedia-ExampleTests.release.xcconfig"; sourceTree = "<group>"; };
 		9B8DE3DD0F0031C3A40BE3CC /* Pods_NECopyRightMedia_Example_NECopyRightMedia_ExampleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NECopyRightMedia_Example_NECopyRightMedia_ExampleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC15F3D62B468562AC618D3 /* Pods-NECopyRightMedia-Example-NECopyRightMedia-ExampleUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NECopyRightMedia-Example-NECopyRightMedia-ExampleUITests.debug.xcconfig"; path = "Target Support Files/Pods-NECopyRightMedia-Example-NECopyRightMedia-ExampleUITests/Pods-NECopyRightMedia-Example-NECopyRightMedia-ExampleUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		ED8CF06D28B8A3D400DC61A1 /* GenerateTestUserToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GenerateTestUserToken.h; sourceTree = "<group>"; };
+		ED8CF06E28B8A3D400DC61A1 /* GenerateTestUserToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GenerateTestUserToken.m; sourceTree = "<group>"; };
+		ED8CF07028B8A48900DC61A1 /* NECopyrightedExampleMacro.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NECopyrightedExampleMacro.h; sourceTree = "<group>"; };
+		ED8CF07128B8C74700DC61A1 /* DynamicTokenHandleEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DynamicTokenHandleEngine.h; sourceTree = "<group>"; };
+		ED8CF07228B8C74700DC61A1 /* DynamicTokenHandleEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DynamicTokenHandleEngine.m; sourceTree = "<group>"; };
 		EDB434E12886A52C003A23F7 /* NECopyRightMedia-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "NECopyRightMedia-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EDB434E42886A52C003A23F7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		EDB434E52886A52C003A23F7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -167,6 +174,11 @@
 				EDB434E82886A52C003A23F7 /* SceneDelegate.m */,
 				EDB434EA2886A52C003A23F7 /* ViewController.h */,
 				EDB434EB2886A52C003A23F7 /* ViewController.m */,
+				ED8CF06D28B8A3D400DC61A1 /* GenerateTestUserToken.h */,
+				ED8CF06E28B8A3D400DC61A1 /* GenerateTestUserToken.m */,
+				ED8CF07128B8C74700DC61A1 /* DynamicTokenHandleEngine.h */,
+				ED8CF07228B8C74700DC61A1 /* DynamicTokenHandleEngine.m */,
+				ED8CF07028B8A48900DC61A1 /* NECopyrightedExampleMacro.h */,
 				EDB434ED2886A52C003A23F7 /* Main.storyboard */,
 				EDB434F02886A52D003A23F7 /* Assets.xcassets */,
 				EDB434F22886A52D003A23F7 /* LaunchScreen.storyboard */,
@@ -442,8 +454,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EDB434EC2886A52C003A23F7 /* ViewController.m in Sources */,
+				ED8CF06F28B8A3D400DC61A1 /* GenerateTestUserToken.m in Sources */,
 				EDFD5EFA28B352D700B203AF /* RTCManager.m in Sources */,
 				EDB434E62886A52C003A23F7 /* AppDelegate.m in Sources */,
+				ED8CF07328B8C74700DC61A1 /* DynamicTokenHandleEngine.m in Sources */,
 				EDB434F72886A52D003A23F7 /* main.m in Sources */,
 				EDB434E92886A52C003A23F7 /* SceneDelegate.m in Sources */,
 			);
