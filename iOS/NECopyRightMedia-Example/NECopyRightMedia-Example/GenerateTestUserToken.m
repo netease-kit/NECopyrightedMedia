@@ -13,8 +13,7 @@
 
 + (NSString *)makeDynamicToken:(NSString *)account{
     ///获取当前时间戳，单位毫秒
-    long curTime = 1661509154011;
-//    [self getNowTimeTimestamp];
+    long curTime = [self getNowTimeTimestamp];
     ///设置过期时间，单位秒，如600
 /// #生成signature，将appkey、identification、curTime、ttl、appsecret五个字段拼成一个字符串
     NSLog(@"%@",[NSString stringWithFormat:@"%@_%@_%@_%@_%@",appKay,account,[NSString stringWithFormat:@"%ld",curTime],[NSString stringWithFormat:@"%d",ttl],appSecret]);
