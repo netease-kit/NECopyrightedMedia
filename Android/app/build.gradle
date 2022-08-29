@@ -39,6 +39,7 @@ dependencies {
 
     implementation "com.netease.yunxin.kit.copyrightedmedia:copyrightedmedia:1.1.0"
     implementation "com.netease.yunxin:nertc-base:4.2.151"
+    implementation "com.google.code.gson:gson:2.9.0"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
