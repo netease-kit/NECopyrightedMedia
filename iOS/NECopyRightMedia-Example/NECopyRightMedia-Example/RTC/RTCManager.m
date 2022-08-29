@@ -52,7 +52,8 @@
 }
 - (void)enterRTCRoomWithToken:(NSString *)token
                   channelName:(NSString *)channelName
-                        myUid:(uint64_t)myUid {
+                        myUid:(uint64_t)myUid
+                        error:(void(^)(NSError * _Nullable))callback{
   [NERtcEngine.sharedEngine
       joinChannelWithToken:NULL
                channelName:channelName
@@ -62,11 +63,12 @@
                              uint64_t uid) {
                   if (error) {
                     //加入失败
-
+                      callback(error);
                   } else {
                     //加入成功
                     NSLog(@"uid --- %llu, cid --- %llu", uid, channelId);
                     [[NERtcEngine sharedEngine] setParameters:@{kNERtcKeyAutoSubscribeAudio : @1}];
+                      callback(nil);
                   }
                 }];
 }
