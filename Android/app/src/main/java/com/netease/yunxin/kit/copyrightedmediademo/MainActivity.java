@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import com.netease.lava.nertc.sdk.NERtc;
 import com.netease.lava.nertc.sdk.NERtcCallback;
@@ -24,23 +23,30 @@ import com.netease.lava.nertc.sdk.NERtcEx;
 import com.netease.lava.nertc.sdk.NERtcParameters;
 import com.netease.lava.nertc.sdk.audio.NERtcAudioStreamType;
 import com.netease.lava.nertc.sdk.audio.NERtcCreateAudioEffectOption;
-import com.netease.lava.nertc.sdk.video.NERtcRemoteVideoStreamType;
 import com.netease.yunxin.kit.copyrightedmedia.api.NECopyrightedMedia;
 import com.netease.yunxin.kit.copyrightedmedia.api.NEErrorCode;
 import com.netease.yunxin.kit.copyrightedmedia.api.NESongPreloadCallback;
 import com.netease.yunxin.kit.copyrightedmedia.api.SongResType;
+import com.netease.yunxin.kit.copyrightedmedia.api.model.NECopyrightedSong;
+import com.netease.yunxin.kit.copyrightedmedia.impl.NECopyrightedEventHandler;
+import com.netease.yunxin.kit.copyrightedmediademo.debug.GenerateTestUserToken;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements NERtcCallback {
+public class MainActivity extends AppCompatActivity
+    implements NERtcCallback, NECopyrightedEventHandler {
   private static final String LOG_TAG = "SampleCode";
 
   private static final int REQUEST_CODE_PERMISSION = 10000;
 
-  private boolean isAnchor;
-
   private Context context;
+
+  private static final long AHEAD_TIME_REFRESH_TOKEN = 180L;
+
+  private static final int REFRESH_TOKEN_TASK_ID = 430;
+
+  private static final int TOKEN_WILL_EXPIRED_TASK_ID = 431;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
     requestPermissionsIfNeeded();
     initViews();
     setupNERtc();
+    NECopyrightedMedia.getInstance().setEventHandler(this);
+    TimerTaskUtil.init();
   }
 
   private void requestPermissionsIfNeeded() {
@@ -64,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
     final EditText editTextUserId = findViewById(R.id.et_user_id);
     editTextUserId.setText(generateRandomUserID());
     final EditText editTextRoomId = findViewById(R.id.et_room_id);
-    final SwitchCompat switchRole = findViewById(R.id.sh_role);
     findViewById(R.id.btn_join)
         .setOnClickListener(
             v -> {
@@ -88,24 +95,77 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
                 return;
               }
 
-              boolean isAnchor = switchRole.isChecked();
-              joinRtcChannel(isAnchor, roomId, userId);
+              joinRtcChannel(roomId, userId);
               hideSoftKeyboard();
+            });
+    findViewById(R.id.btn_init_sdk)
+        .setOnClickListener(
+            v -> {
+              initCopyrightedMediaSDK();
             });
     findViewById(R.id.btn_start_play)
         .setOnClickListener(
             v -> {
-              String user = ((EditText) findViewById(R.id.et_music_user)).getText().toString();
-              String token = ((EditText) findViewById(R.id.et_music_token)).getText().toString();
               String songId = ((EditText) findViewById(R.id.et_song_id)).getText().toString();
-              downloadSong(user, token, songId);
+              downloadSong(songId);
             });
   }
 
-  private void downloadSong(String user, String token, String songId) {
-    NECopyrightedMedia copyrightedMedia = NECopyrightedMedia.getInstance();
+  // 初始化版权SDK
+  private void initCopyrightedMediaSDK() {
+    String account = ((EditText) findViewById(R.id.et_music_user)).getText().toString();
+    String token = getToken(account);
     HashMap<String, Object> extras = new HashMap<>();
-    copyrightedMedia.initialize(this, AppConfig.getAppKey(), token, user, extras);
+    // 获得token
+    getSongDynamicToken(
+        new NECopyrightedMedia.Callback<NEKaraokeDynamicToken>() {
+          @Override
+          public void success(@Nullable NEKaraokeDynamicToken neKaraokeDynamicToken) {
+            Toast.makeText(MainActivity.this, "init CopyrightedMedia success", Toast.LENGTH_LONG)
+                .show();
+            // 初始化sdk
+            NECopyrightedMedia.getInstance()
+                .initialize(MainActivity.this, AppConfig.getAppKey(), token, account, extras);
+          }
+
+          @Override
+          public void error(int i, @Nullable String s) {}
+        });
+  }
+
+  public String getToken(String account) {
+    return GenerateTestUserToken.genTestUserToken(account);
+  }
+
+  private void downloadSong(String songId) {
+    Toast.makeText(MainActivity.this, "init CopyrightedMedia success", Toast.LENGTH_LONG).show();
+    NECopyrightedMedia copyrightedMedia = NECopyrightedMedia.getInstance();
+    if (!TextUtils.isEmpty(songId)) {
+      preloadSong(copyrightedMedia, songId);
+    } else {
+      // 没有设置songId默认播放第一首歌
+      copyrightedMedia.getSongList(
+          null,
+          null,
+          null,
+          new NECopyrightedMedia.Callback<List<NECopyrightedSong>>() {
+            @Override
+            public void error(int code, @Nullable String msg) {
+              Log.e(LOG_TAG, "getSongList fail:" + msg);
+            }
+
+            @Override
+            public void success(@Nullable List<NECopyrightedSong> info) {
+              Log.i(LOG_TAG, "getSongList success:" + info);
+              if (info != null && info.size() > 0) {
+                preloadSong(copyrightedMedia, info.get(0).getSongId()); // play first songId
+              }
+            }
+          });
+    }
+  }
+
+  private void preloadSong(NECopyrightedMedia copyrightedMedia, String songId) {
     copyrightedMedia.preloadSong(
         songId,
         new NESongPreloadCallback() {
@@ -206,12 +266,7 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
     rtcController.playEffect(effectOriginId, originOption);
   }
 
-  private void joinRtcChannel(boolean isAnchor, String roomId, long uid) {
-    this.isAnchor = isAnchor;
-    joinChannel(uid, roomId);
-  }
-
-  private void joinChannel(long userId, String roomId) {
+  private void joinRtcChannel(String roomId, long userId) {
     NERtcEx.getInstance().joinChannel("", roomId, userId);
   }
 
@@ -251,12 +306,7 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
   public void onUserAudioStop(long l) {}
 
   @Override
-  public void onUserVideoStart(long uid, int i) {
-    if (!isAnchor)
-      NERtc.getInstance()
-          .subscribeRemoteVideoStream(
-              uid, NERtcRemoteVideoStreamType.kNERtcRemoteVideoStreamTypeHigh, true);
-  }
+  public void onUserVideoStart(long uid, int i) {}
 
   @Override
   public void onUserVideoStop(long l) {}
@@ -272,5 +322,51 @@ public class MainActivity extends AppCompatActivity implements NERtcCallback {
     super.onDestroy();
     NERtcEx.getInstance().leaveChannel();
     NERtcEx.getInstance().release();
+    TimerTaskUtil.uninit();
+  }
+
+  @Override
+  public void onTokenExpired() {
+    Log.d(LOG_TAG, "onTokenExpired");
+    Toast.makeText(this, R.string.copyright_token_has_expired, Toast.LENGTH_SHORT).show();
+    getSongDynamicToken(null);
+  }
+
+  private void onTokenWillExpired() {
+    getSongDynamicToken(null);
+  }
+
+  /** 刷新版权token */
+  private void getSongDynamicToken(NECopyrightedMedia.Callback<NEKaraokeDynamicToken> callback) {
+    Log.d(LOG_TAG, "getSongDynamicToken");
+    Runnable runnable =
+        new Runnable() {
+          @Override
+          public void run() {
+            // 请求获得新的token
+            String account = ((EditText) findViewById(R.id.et_music_user)).getText().toString();
+            String token = getToken(account);
+            NEKaraokeDynamicToken dynamicToken =
+                new NEKaraokeDynamicToken(token, GenerateTestUserToken.EXPIRE_TIME);
+            NECopyrightedMedia.getInstance().renewToken(dynamicToken.getAccessToken()); // 设置token
+            // 创建定时任务，在token过期前180秒(请根据业务需求自定义)刷新token
+            Runnable tokenWillExpiredTask =
+                new Runnable() {
+                  @Override
+                  public void run() {
+                    onTokenWillExpired();
+                  }
+                };
+            long delaySeconds = (dynamicToken.getExpiresIn() - AHEAD_TIME_REFRESH_TOKEN) * 1000L;
+            if (delaySeconds < 0) {
+              delaySeconds = 0L;
+            }
+            TimerTaskUtil.addTask(TOKEN_WILL_EXPIRED_TASK_ID, tokenWillExpiredTask, delaySeconds);
+            if (callback != null) {
+              callback.success(dynamicToken);
+            }
+          }
+        };
+    TimerTaskUtil.addTask(REFRESH_TOKEN_TASK_ID, runnable, 0L);
   }
 }

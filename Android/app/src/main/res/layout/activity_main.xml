@@ -38,16 +38,6 @@
         app:layout_constraintTop_toBottomOf="@id/et_user_id"
         tools:ignore="TextFields" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/sh_role"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/anchor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_room_id"/>
-
     <Button
         android:id="@+id/btn_join"
         android:layout_width="wrap_content"
@@ -56,7 +46,7 @@
         android:text="@string/join_room"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sh_role" />
+        app:layout_constraintTop_toBottomOf="@id/et_room_id" />
 
 
 
@@ -70,22 +60,11 @@
         android:hint="@string/please_input_music_user_id"
         android:lines="1"
         android:text=""
+        android:inputType="number"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_join" />
-
-    <EditText
-        android:id="@+id/et_music_token"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/please_input_music_token"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_music_user"/>
 
     <EditText
         android:id="@+id/et_song_id"
@@ -100,7 +79,17 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_music_token"/>
+        app:layout_constraintTop_toBottomOf="@id/et_music_user"/>
+
+    <Button
+        android:id="@+id/btn_init_sdk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/init_copyrighted_media_sdk"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_song_id" />
 
     <Button
         android:id="@+id/btn_start_play"
@@ -110,6 +99,6 @@
         android:text="@string/start_play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_song_id" />
+        app:layout_constraintTop_toBottomOf="@id/btn_init_sdk" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
