@@ -8,18 +8,20 @@
     <string name="please_input_user_id">Please input user id</string>
     <string name="please_input_rtc_token">Please input rtc token</string>
     <string name="invalid_user_id">invalid user id</string>
-    <string name="please_input_room_id">Please input room id</string>
-    <string name="join_room">Join Room</string>
+    <string name="please_input_room_id">Please input rtc room id</string>
+    <string name="join_room">Join RTC Room</string>
     <string name="leave_room">Leave Room</string>
     <string name="anchor">Anchor</string>
     <string name="start_movie">Start Movie</string>
     <string name="init_copyrighted_media_sdk">init Copyrightedmedia sdk</string>
     <string name="start_play">Start Play</string>
     <string name="please_input_music_user_id">Please input music user id</string>
-    <string name="please_input_music_token">Please input music token</string>
     <string name="please_input_song_id">Please input song id</string>
     <string name="song_load_success">歌曲加载成功, songId: %s</string>
     <string name="song_load_failed">歌曲加载失败 %d %s</string>
     <string name="start_load">歌曲开始加载, songId: %s</string>
     <string name="copyright_token_has_expired">版权token过期，请稍后再试</string>
+    <string name="default_channel">默认</string>
+    <string name="cloud_music_channel">云音乐</string>
+    <string name="migu_channel">咪咕</string>
 </resources>
