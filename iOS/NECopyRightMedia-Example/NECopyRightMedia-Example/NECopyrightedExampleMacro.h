@@ -5,8 +5,8 @@
 #ifndef NECopyrightedExampleMacro_h
 #define NECopyrightedExampleMacro_h
 
-#define appKay @"499cccee925ae59f70cfcb0da04f7ce5"
-#define appSecret @"a791c80c358b"
+#define appKay @""
+#define appSecret @""
 //过期前提醒时间设置
 #define ttl  600
 
