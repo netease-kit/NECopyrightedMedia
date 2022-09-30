@@ -17,11 +17,11 @@
     <string name="start_play">Start Play</string>
     <string name="please_input_music_user_id">Please input music user id</string>
     <string name="please_input_song_id">Please input song id</string>
-    <string name="song_load_success">歌曲加载成功, songId: %s</string>
-    <string name="song_load_failed">歌曲加载失败 %d %s</string>
-    <string name="start_load">歌曲开始加载, songId: %s</string>
-    <string name="copyright_token_has_expired">版权token过期，请稍后再试</string>
-    <string name="default_channel">默认</string>
-    <string name="cloud_music_channel">云音乐</string>
-    <string name="migu_channel">咪咕</string>
+    <string name="song_load_success">The song is loaded successfully., songId: %s</string>
+    <string name="song_load_failed">Failed to load the song %d %s</string>
+    <string name="start_load">The song starts loading, songId: %s</string>
+    <string name="copyright_token_has_expired">Copyright token expires, please try again later</string>
+    <string name="default_channel">Default channel</string>
+    <string name="cloud_music_channel">Cloud music</string>
+    <string name="migu_channel">Migu</string>
 </resources>
