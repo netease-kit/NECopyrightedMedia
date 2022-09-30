@@ -53,6 +53,12 @@ public class GenerateTestUserToken {
   //    private static final String APP_KEY = AppConfig.getAppKey();
   private static final String APP_KEY = AppConfig.getAppKey();
 
+  /**
+   * 获取用户token
+   *
+   * @param user user用来对账时标记一个客户
+   * @return
+   */
   public static String genTestUserToken(String user) {
     long curTime = System.currentTimeMillis();
     Map<String, Object> params = new HashMap<>();

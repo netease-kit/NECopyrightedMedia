@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,12 +28,14 @@ import com.netease.yunxin.kit.copyrightedmedia.api.NECopyrightedMedia;
 import com.netease.yunxin.kit.copyrightedmedia.api.NEErrorCode;
 import com.netease.yunxin.kit.copyrightedmedia.api.NESongPreloadCallback;
 import com.netease.yunxin.kit.copyrightedmedia.api.SongResType;
+import com.netease.yunxin.kit.copyrightedmedia.api.model.NECopyrightedMediaChannel;
 import com.netease.yunxin.kit.copyrightedmedia.api.model.NECopyrightedSong;
 import com.netease.yunxin.kit.copyrightedmedia.impl.NECopyrightedEventHandler;
 import com.netease.yunxin.kit.copyrightedmediademo.debug.GenerateTestUserToken;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import kotlin.Unit;
 
 public class MainActivity extends AppCompatActivity
     implements NERtcCallback, NECopyrightedEventHandler {
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity
   private static final int REFRESH_TOKEN_TASK_ID = 430;
 
   private static final int TOKEN_WILL_EXPIRED_TASK_ID = 431;
+
+  private Integer songChannel = null;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,8 +112,19 @@ public class MainActivity extends AppCompatActivity
         .setOnClickListener(
             v -> {
               String songId = ((EditText) findViewById(R.id.et_song_id)).getText().toString();
-              downloadSong(songId);
+              downloadSong(songId, songChannel);
             });
+    RadioGroup songChannelGroup = findViewById(R.id.rg_song_channel);
+    songChannelGroup.setOnCheckedChangeListener(
+        (group, checkedId) -> {
+          if (checkedId == R.id.channel_cloud_music) {
+            songChannel = NECopyrightedMediaChannel.CLOUD_MUSIC;
+          } else if (checkedId == R.id.channel_migu) {
+            songChannel = NECopyrightedMediaChannel.MI_GU;
+          } else {
+            songChannel = null;
+          }
+        });
   }
 
   // 初始化版权SDK
@@ -121,11 +137,31 @@ public class MainActivity extends AppCompatActivity
         new NECopyrightedMedia.Callback<NEKaraokeDynamicToken>() {
           @Override
           public void success(@Nullable NEKaraokeDynamicToken neKaraokeDynamicToken) {
-            Toast.makeText(MainActivity.this, "init CopyrightedMedia success", Toast.LENGTH_LONG)
-                .show();
             // 初始化sdk
             NECopyrightedMedia.getInstance()
-                .initialize(MainActivity.this, AppConfig.getAppKey(), token, account, extras);
+                .initialize(
+                    MainActivity.this,
+                    AppConfig.getAppKey(),
+                    token,
+                    account,
+                    extras,
+                    new NECopyrightedMedia.Callback<Unit>() {
+                      @Override
+                      public void success(@Nullable Unit info) {
+                        Toast.makeText(
+                                MainActivity.this,
+                                "init CopyrightedMedia success",
+                                Toast.LENGTH_LONG)
+                            .show();
+                      }
+
+                      @Override
+                      public void error(int code, @Nullable String msg) {
+                        Toast.makeText(
+                                MainActivity.this, "init CopyrightedMedia fail", Toast.LENGTH_LONG)
+                            .show();
+                      }
+                    });
           }
 
           @Override
@@ -137,17 +173,18 @@ public class MainActivity extends AppCompatActivity
     return GenerateTestUserToken.genTestUserToken(account);
   }
 
-  private void downloadSong(String songId) {
-    Toast.makeText(MainActivity.this, "init CopyrightedMedia success", Toast.LENGTH_LONG).show();
+  private void downloadSong(String songId, Integer channel) {
     NECopyrightedMedia copyrightedMedia = NECopyrightedMedia.getInstance();
     if (!TextUtils.isEmpty(songId)) {
-      preloadSong(copyrightedMedia, songId);
+      preloadSong(copyrightedMedia, songId, channel);
     } else {
-      // 没有设置songId默认播放第一首歌
+      //  没有设置songId默认播放第一首歌
+      Toast.makeText(MainActivity.this, "get song list", Toast.LENGTH_LONG).show();
       copyrightedMedia.getSongList(
           null,
-          null,
-          null,
+          channel,
+          0,
+          20,
           new NECopyrightedMedia.Callback<List<NECopyrightedSong>>() {
             @Override
             public void error(int code, @Nullable String msg) {
@@ -158,37 +195,48 @@ public class MainActivity extends AppCompatActivity
             public void success(@Nullable List<NECopyrightedSong> info) {
               Log.i(LOG_TAG, "getSongList success:" + info);
               if (info != null && info.size() > 0) {
-                preloadSong(copyrightedMedia, info.get(0).getSongId()); // play first songId
+                preloadSong(
+                    copyrightedMedia,
+                    info.get(0).getSongId(),
+                    info.get(0).getChannel()); // play first songId
               }
             }
           });
     }
   }
 
-  private void preloadSong(NECopyrightedMedia copyrightedMedia, String songId) {
+  private void preloadSong(NECopyrightedMedia copyrightedMedia, String songId, Integer channel) {
+    Toast.makeText(
+            MainActivity.this,
+            "start download song:" + songId + " channel:" + channel,
+            Toast.LENGTH_LONG)
+        .show();
     copyrightedMedia.preloadSong(
         songId,
+        channel,
         new NESongPreloadCallback() {
           @Override
-          public void onPreloadStart(String songId) {
+          public void onPreloadStart(String songId, int channel) {
             Toast.makeText(
                     context, context.getString(R.string.start_load, songId), Toast.LENGTH_SHORT)
                 .show();
           }
 
           @Override
-          public void onPreloadProgress(String songId, float progress) {}
+          public void onPreloadProgress(String songId, int channel, float progress) {}
 
           @Override
-          public void onPreloadComplete(String songId, int errorCode, String msg) {
+          public void onPreloadComplete(String songId, int channel, int errorCode, String msg) {
             if (errorCode == NEErrorCode.OK) {
               Toast.makeText(
                       context,
                       context.getString(R.string.song_load_success, songId),
                       Toast.LENGTH_SHORT)
                   .show();
-              String originPath = copyrightedMedia.getSongURI(songId, SongResType.TYPE_ORIGIN);
-              String accompanyPath = copyrightedMedia.getSongURI(songId, SongResType.TYPE_ACCOMP);
+              String originPath =
+                  copyrightedMedia.getSongURI(songId, channel, SongResType.TYPE_ORIGIN);
+              String accompanyPath =
+                  copyrightedMedia.getSongURI(songId, channel, SongResType.TYPE_ACCOMP);
               useNERtc(originPath, accompanyPath, 0);
             } else {
               Toast.makeText(
