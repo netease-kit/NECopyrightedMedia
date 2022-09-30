@@ -11,7 +11,7 @@ target 'NECopyRightMedia-Example' do
   pod 'NERtcSDK','4.2.151'
   pod 'YYModel'
   pod 'YXAlog_iOS'
-  pod 'NECopyrightedMedia','~> 1.1.0'
+  pod 'NECopyrightedMedia-Special','1.3.0'
   pod 'Masonry', '~> 1.1.0'
   target 'NECopyRightMedia-ExampleTests' do
     inherit! :search_paths

@@ -316,6 +316,7 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
 - (void)getKaraokeSongList {
   [[NECopyrightedMedia getInstance]
       getSongList:nil
+        channel:@1
           pageNum:@(self.pageNum)
          pageSize:@(NEPageSize)
          callback:^(NSArray<NECopyrightedSong *> *_Nonnull songList, NSError *_Nonnull error) {
@@ -331,7 +332,7 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
   self.currentSongId = nil;
   self.preloadResultTextView.text = @"";
   if (self.songIdTextField.text.length > 0) {
-    [[NECopyrightedMedia getInstance] preloadSong:self.songIdTextField.text observe:self];
+    [[NECopyrightedMedia getInstance] preloadSong:self.songIdTextField.text channel:CLOUD_MUSIC observe:self];
   } else {
     self.preloadResultTextView.text = @"加载失败，请输入服务端获取的SongId";
   }
@@ -343,17 +344,21 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
         self.copyrightedInitResultLabel.text = @"请输入account";
         return;
     }
-    [[NECopyrightedMedia getInstance] initialize:appKay
-                                           token:[GenerateTestUserToken makeDynamicToken:self.accountTextField.text]
-                                        userUuid:self.accountTextField.text
-                                          extras:nil];
-    self.copyrightedInitResultLabel.text = @"初始化成功";
+    [[NECopyrightedMedia getInstance] initialize:appKay token:[GenerateTestUserToken makeDynamicToken:self.accountTextField.text] userUuid:self.accountTextField.text extras:nil callback:^(NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                self.copyrightedInitResultLabel.text = @"初始化失败";
+            }else{
+                self.copyrightedInitResultLabel.text = @"初始化成功";
+            }
+        });
+    }];
+    
+    
     [[DynamicTokenHandleEngine sharedInstance] calculateExpiredTime:ttl];
     //清理缓存
     [[NECopyrightedMedia getInstance] clearSongCache];
     self.pageNum = 0;
-    //设置版权代理
-    [[NECopyrightedMedia getInstance] addPreloadProtocolObserve:self];
     //设置动态Token过期代理
     [[NECopyrightedMedia getInstance] setEventHandler:self];
     [self getKaraokeSongList];
@@ -384,20 +389,20 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
 }
 #pragma mark <NESongPreloadProtocol>
 
-- (void)onPreloadStart:(nonnull NSString *)songId {
+- (void)onPreloadStart:(nonnull NSString *)songId channel:(SongChannel)channel  {
   dispatch_async(dispatch_get_main_queue(), ^{
     self.preloadResultTextView.text =
         [self.preloadResultTextView.text stringByAppendingFormat:@"开始预加载 - songID:%@", songId];
   });
 }
-- (void)onPreloadProgress:(NSString *)songId progress:(float)progress {
+- (void)onPreloadProgress:(NSString *)songId channel:(SongChannel)channel  progress:(float)progress {
   dispatch_async(dispatch_get_main_queue(), ^{
     self.preloadResultTextView.text = [self.preloadResultTextView.text
         stringByAppendingFormat:@"预加载进度 - songID:%@,progress:%.2f", songId, progress];
   });
 }
 
-- (void)onPreloadComplete:(NSString *)songId error:(NSError *_Nullable)preloadError {
+- (void)onPreloadComplete:(NSString *)songId channel:(SongChannel)channel  error:(NSError *_Nullable)preloadError {
   dispatch_async(dispatch_get_main_queue(), ^{
     if (preloadError) {
       self.preloadResultTextView.text = [self.preloadResultTextView.text
@@ -415,9 +420,9 @@ typedef void (^SongListBlock)(NSError *_Nullable error);
 
 - (void)playSong {
   if (self.currentSongId) {
-    NSString *originalPath = [[NECopyrightedMedia getInstance] getSongURI:self.currentSongId
+    NSString *originalPath = [[NECopyrightedMedia getInstance] getSongURI:self.currentSongId channel:CLOUD_MUSIC
                                                               songResType:TYPE_ORIGIN];
-    NSString *accPath = [[NECopyrightedMedia getInstance] getSongURI:self.currentSongId
+    NSString *accPath = [[NECopyrightedMedia getInstance] getSongURI:self.currentSongId channel:CLOUD_MUSIC
                                                          songResType:TYPE_ACCOMP];
     [[RTCManager getInstance] playAudioWithAccPath:accPath originalPath:originalPath];
   } else {

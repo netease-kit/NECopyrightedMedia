@@ -9,9 +9,6 @@
 #define appSecret @""
 //过期前提醒时间设置
 #define ttl  600
-//#define RTC_channelName @"mayajie"
-//#define RTC_uid 100
-//#define Copyrighted_account @"af64fba8add118f5f12b38c5937b4bb1"
 
 
 #endif /* NECopyrightedExampleMacro_h */
