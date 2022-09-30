@@ -5,13 +5,10 @@
 #ifndef NECopyrightedExampleMacro_h
 #define NECopyrightedExampleMacro_h
 
-#define appKay @""
-#define appSecret @""
+#define appKay @"499cccee925ae59f70cfcb0da04f7ce5"
+#define appSecret @"a791c80c358b"
 //过期前提醒时间设置
 #define ttl  600
-//#define RTC_channelName @"mayajie"
-//#define RTC_uid 100
-//#define Copyrighted_account @"af64fba8add118f5f12b38c5937b4bb1"
 
 
 #endif /* NECopyrightedExampleMacro_h */
